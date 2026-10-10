@@ -1,4 +1,4 @@
-# Gig Ready
+# Rancang Rezeki
 
 Mobile-first, single-file web app (`index.html`) for Malaysian gig workers (Grab, foodpanda, Lalamove, Shopee, freelancers).
 Helps them see their real average income and lean month, set money aside, check loan readiness and prepare documents for financing.

@@ -1,4 +1,4 @@
-# Gig Ready – 3-user self-test
+# Rancang Rezeki – 3-user self-test
 
 Automated in headless Chromium (390×844 phone viewport), driving the real UI: each user's 12 months of entries are typed
 into the Log form, then the displayed numbers are compared to an independently computed expectation (22 checks per user).
