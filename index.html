@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<link id="ico" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d4ed8'/%3E%3Crect x='13' y='38' width='10' height='14' rx='2' fill='%23fff'/%3E%3Crect x='27' y='28' width='10' height='24' rx='2' fill='%23fff'/%3E%3Crect x='41' y='16' width='10' height='36' rx='2' fill='%23fff'/%3E%3C/svg%3E">
+<link id="touch" rel="apple-touch-icon" href="">
+<meta name="theme-color" content="#1d4ed8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gig Ready">
+<title>Gig Ready</title>
+<style>
+:root{--ink:#111827;--mute:#4b5563;--line:#d1d5db;--bg:#fff;--soft:#f3f4f6;--brand:#1d4ed8;--ok:#047857;--okbg:#ecfdf5;--bad:#b91c1c;--badbg:#fef2f2;--warn:#92400e;--warnbg:#fffbeb}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:96px}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 6px}
+h1{font-size:28px;margin:0}
+h2{font-size:24px;margin:8px 0 4px}
+h3{font-size:20px;margin:22px 0 8px}
+p{margin:6px 0}
+.sub{color:var(--mute);font-size:16px}
+.lang{display:flex;border:2px solid var(--brand);border-radius:10px;overflow:hidden}
+.lang button{border:0;background:#fff;color:var(--brand);font-weight:600;font-size:16px;font-family:inherit;padding:10px 14px;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--brand);color:#fff}
+.disc{background:var(--warnbg);border:2px solid #f59e0b;color:var(--warn);border-radius:12px;padding:10px 14px;font-size:16px;margin:8px 0 12px}
+label{display:block;font-weight:600;margin:14px 0 6px}
+input,select{width:100%;font:inherit;font-size:20px;padding:12px;min-height:52px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+input:focus,select:focus,button:focus-visible{outline:3px solid #93c5fd;outline-offset:1px;border-color:var(--brand)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{display:block;width:100%;min-height:54px;margin-top:16px;border:0;border-radius:12px;background:var(--brand);color:#fff;font-weight:700;font-size:20px;font-family:inherit}
+.btn.alt{background:#fff;color:var(--bad);border:2px solid var(--bad);font-size:16px;min-height:46px}
+.hint{font-size:15px;color:var(--mute);margin-top:6px}
+.card{border:2px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+.big{font-size:34px;font-weight:800;line-height:1.1}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stats .card{margin:0}
+.lbl{font-size:15px;color:var(--mute)}
+ul.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:10px 0}
+.list .grow{flex:1;min-width:0;overflow-wrap:anywhere}
+.x{border:2px solid var(--line);background:#fff;border-radius:10px;min-width:44px;min-height:44px;font-size:20px;color:var(--bad)}
+table{width:100%;border-collapse:collapse}
+td,th{padding:10px 4px;border-bottom:1px solid var(--line);text-align:right}
+td:first-child,th:first-child{text-align:left}
+th{font-size:15px;color:var(--mute);font-weight:600}
+.tag{display:inline-block;max-width:100%;border-radius:12px;padding:4px 10px;margin-top:4px;text-align:center;font-weight:700;font-size:16px}
+.tag.ok{background:var(--okbg);color:var(--ok)}
+.tag.bad{background:var(--badbg);color:var(--bad)}
+.check{display:flex;gap:14px;align-items:flex-start;border:2px solid var(--line);border-radius:12px;padding:12px;margin:10px 0;font-weight:500;margin-top:10px}
+.check input{width:28px;height:28px;min-height:0;flex:none;margin-top:2px}
+.tip{background:#eff6ff;border:2px solid #93c5fd;border-radius:12px;padding:12px 14px;margin-top:16px}
+.legend{list-style:none;padding:0;margin:8px 0 0}
+.legend .grow{flex:1;min-width:0;overflow-wrap:anywhere}
+.legend li{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:17px}
+.sw{width:16px;height:16px;border-radius:4px;flex:none}
+.chartwrap{display:flex;flex-direction:column;align-items:center}
+svg text{font-family:inherit}
+section{display:none}
+section.on{display:block}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:2px solid var(--line);display:flex;z-index:5}
+nav button{flex:1;border:0;background:#fff;padding:8px 2px;min-height:64px;font-weight:600;font-size:12.5px;font-family:inherit;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button .ic{font-size:22px}
+nav button[aria-current=page]{color:var(--brand);box-shadow:inset 0 3px 0 var(--brand)}
+.why{background:#eff6ff;border:2px solid #93c5fd;border-radius:14px;padding:12px 16px;margin:6px 0 14px}
+.why h3{margin:0 0 4px}.why ul{margin:6px 0 0;padding-left:22px}.why li{margin:4px 0}
+.pager{display:flex;align-items:center;gap:10px;margin:24px 0 0}
+.pager button{flex:1;min-height:56px;border-radius:12px;border:2px solid var(--brand);background:#fff;color:var(--brand);font-weight:700;font-size:18px;font-family:inherit;padding:8px}
+.pager button.go{background:var(--brand);color:#fff}
+.pager button[hidden]{display:block;visibility:hidden}
+.pager .step{font-size:15px;color:var(--mute);min-width:44px;text-align:center}
+footer{margin:28px 0 8px;padding-top:14px;border-top:1px solid var(--line);font-size:15px;color:var(--mute);text-align:center}
+footer b{color:var(--ink)}
+.empty{color:var(--mute);padding:10px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div><h1>Gig Ready</h1><div class="sub" data-i="tagline"></div></div>
+  <div class="lang" role="group" aria-label="Language">
+    <button id="l-ms" aria-pressed="true">BM</button><button id="l-en" aria-pressed="false">EN</button>
+  </div>
+</header>
+<div class="disc" role="note"><b data-i="discB"></b> <span data-i="disc"></span></div>
+
+<main>
+<!-- 1. LOG -->
+<section id="s-log" class="on">
+  <div class="why"><h3 data-i="whyT"></h3><p data-i="why"></p>
+    <ul><li data-i="why1"></li><li data-i="why2"></li><li data-i="why3"></li></ul></div>
+  <h2 data-i="logT"></h2>
+  <p class="sub" data-i="logD"></p>
+  <form id="f-log" autocomplete="off">
+    <label for="in-month" data-i="month"></label>
+    <input id="in-month" type="month" required pattern="\d{4}-\d{2}" placeholder="YYYY-MM">
+    <label for="in-plat" data-i="platform"></label>
+    <select id="in-plat">
+      <option>Grab</option><option>foodpanda</option><option>Lalamove</option><option>Shopee</option><option>Freelance</option>
+      <option value="__other" data-i="other"></option>
+    </select>
+    <div id="otherBox" hidden>
+      <label for="in-other" data-i="otherName"></label>
+      <input id="in-other" maxlength="24">
+    </div>
+    <label for="in-amt" data-i="amount"></label>
+    <input id="in-amt" type="number" inputmode="decimal" min="0" max="1000000" step="0.01" required placeholder="0.00">
+    <div class="hint" data-i="logHint"></div>
+    <div id="logErr" class="hint" style="color:var(--bad)" role="alert"></div>
+    <button class="btn" type="submit" data-i="add"></button>
+  </form>
+  <h3 data-i="entries"></h3>
+  <ul class="list" id="entryList"></ul>
+  <button class="btn alt" id="btn-clear" data-i="clear"></button>
+</section>
+
+<!-- 2. INCOME -->
+<section id="s-inc">
+  <h2 data-i="incT"></h2>
+  <div id="incEmpty" class="empty" data-i="noData"></div>
+  <div id="incBody" hidden>
+    <div class="stats">
+      <div class="card"><div class="lbl" data-i="avg"></div><div class="big" id="v-avg"></div></div>
+      <div class="card"><div class="lbl" data-i="lean"></div><div class="big" id="v-lean"></div><div class="lbl" id="v-leanM"></div></div>
+    </div>
+    <p class="hint" id="v-basis"></p>
+    <h3 data-i="byMonth"></h3>
+    <div class="chartwrap"><svg id="bars" viewBox="0 0 360 210" width="100%" role="img"></svg></div>
+    <h3 data-i="byPlat"></h3>
+    <div class="chartwrap"><svg id="donut" viewBox="0 0 42 42" width="220" height="220" role="img"></svg>
+    <ul class="legend" id="legend" style="width:100%"></ul></div>
+  </div>
+</section>
+
+<!-- 3. SET ASIDE -->
+<section id="s-aside">
+  <h2 data-i="asT"></h2>
+  <p class="sub" data-i="asD"></p>
+  <div id="asEmpty" class="empty" data-i="noData"></div>
+  <div id="asBody" hidden>
+    <div class="card">
+      <table>
+        <thead><tr><th data-i="asItem"></th><th data-i="asPct"></th><th data-i="asAvg"></th><th data-i="asLean"></th></tr></thead>
+        <tbody id="asRows"></tbody>
+      </table>
+    </div>
+    <p id="asGap"></p>
+  </div>
+  <p class="hint" id="asNote"></p>
+</section>
+
+<!-- 4. LOAN -->
+<section id="s-loan">
+  <h2 data-i="lnT"></h2>
+  <p class="sub" data-i="lnD"></p>
+  <label for="in-debt" data-i="debt"></label>
+  <input id="in-debt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00">
+  <label for="in-target" data-i="target"></label>
+  <input id="in-target" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00">
+  <h3 data-i="exT"></h3>
+  <p class="hint" data-i="exD"></p>
+  <form id="f-extra" autocomplete="off">
+    <label for="ex-name" data-i="exName"></label>
+    <input id="ex-name" maxlength="30" data-ph="exPh">
+    <div class="row">
+      <div><label for="ex-amt" data-i="exAmt"></label>
+      <input id="ex-amt" type="number" inputmode="decimal" min="0" max="1000000" step="0.01" placeholder="0.00"></div>
+      <div><label for="ex-type" data-i="exType"></label>
+      <select id="ex-type"><option value="debt" data-i="exDebt"></option><option value="other" data-i="exOther"></option></select></div>
+    </div>
+    <div id="exErr" class="hint" style="color:var(--bad)" role="alert"></div>
+    <button class="btn" type="submit" data-i="exAdd"></button>
+  </form>
+  <ul class="list" id="exList"></ul>
+  <div id="lnEmpty" class="empty" data-i="noData"></div>
+  <div id="lnBody" hidden>
+    <div class="card">
+      <p><span class="lbl" data-i="totalDebt"></span><br><span class="big" id="v-total"></span><br><span class="lbl" id="v-break"></span></p>
+      <table>
+        <thead><tr><th data-i="lnBasis"></th><th data-i="lnInc"></th><th data-i="lnPct"></th></tr></thead>
+        <tbody id="lnRows"></tbody>
+      </table>
+    </div>
+    <div class="card" id="budgetCard">
+      <p><b data-i="bdT"></b></p>
+      <table>
+        <thead><tr><th></th><th data-i="byLean"></th><th data-i="byAvg"></th></tr></thead>
+        <tbody id="bdRows"></tbody>
+      </table>
+      <p class="hint" data-i="bdNote"></p>
+    </div>
+    <p class="hint" id="lnNote"></p>
+  </div>
+</section>
+
+<!-- 5. DOCS -->
+<section id="s-docs">
+  <h2 data-i="dcT"></h2>
+  <p class="sub" data-i="dcD"></p>
+  <div id="checks"></div>
+  <div class="tip"><b data-i="tipB"></b> <span data-i="tip"></span></div>
+</section>
+</main>
+<div class="pager" id="pager"><button id="pg-prev" type="button"></button><span class="step" id="pg-step"></span><button id="pg-next" type="button" class="go"></button></div>
+
+<footer>
+  <b data-i="foot"></b><br><span data-i="footSub"></span>
+  <button class="btn" id="btn-save" type="button" data-i="saveApp"></button>
+  <button class="btn alt" id="btn-copy" type="button" data-i="copyApp" style="color:var(--brand);border-color:var(--brand)"></button>
+  <p class="hint" id="saveMsg" role="status"></p>
+  <p class="hint" data-i="saveHint"></p>
+</footer>
+</div>
+
+<nav id="nav" aria-label="Menu"></nav>
+
+<script>
+"use strict";
+const APP_SRC = "<!doctype html>\n" + document.documentElement.outerHTML; // clean copy before any rendering
+/* ================= EDITABLE CONSTANTS ================= */
+// Set-aside shares of income. PLACEHOLDER, TO BE VALIDATED (with a tax adviser / KWSP / LHDN).
+const SETASIDE_PCT = { epf: 0.10, tax: 0.05, buffer: 0.10 };
+// Max total monthly debt as share of income. SJKP guideline, verify with the bank.
+const DEBT_LIMIT = 0.65;
+const WINDOW_MONTHS = 12;
+const STORE_KEY = "gigready.v1";
+/* ===================================================== */
+
+const MONTHS = {
+  ms: ["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogo","Sep","Okt","Nov","Dis"],
+  en: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+};
+const COLORS = ["#1d4ed8","#0f766e","#b45309","#7c3aed","#be123c","#475569"];
+
+const T = {
+ms: {
+  tagline:"Bersedia untuk kerja gig anda", discB:"Alat perancangan sahaja.",
+  disc:"Ini BUKAN bukti pendapatan dan bukan dokumen bank. Angka dikira daripada apa yang anda taip sendiri.",
+  whyT:"Kenapa Gig Ready?", why:"Pendapatan gig naik turun setiap bulan, jadi sukar untuk bank dan anda sendiri nampak gambaran sebenar. Aplikasi ini membantu anda:",
+  why1:"Lihat purata pendapatan sebenar dan bulan paling perlahan", why2:"Asingkan wang untuk EPF/i-Saraan, cukai dan bulan perlahan", why3:"Semak kesediaan pinjaman dan sediakan dokumen untuk pembiayaan",
+  back:"◀ Kembali", next:"Seterusnya ▶",
+  logT:"Catat pendapatan", logD:"Tambah satu rekod bagi setiap platform setiap bulan. Anda boleh tambah banyak platform dalam bulan yang sama.",
+  month:"Bulan", platform:"Platform", other:"Lain-lain", otherName:"Nama platform", amount:"Jumlah (RM)",
+  logHint:"Catat setiap bulan, termasuk bulan teruk (RM 0), supaya purata jujur.",
+  add:"Tambah", entries:"Rekod anda", clear:"Padam semua data", clearQ:"Padam semua data di peranti ini?",
+  noEntries:"Belum ada rekod.", del:"Padam", errMonth:"Pilih bulan yang sah.", errAmt:"Masukkan jumlah RM yang sah.", errName:"Taip nama platform.",
+  incT:"Pendapatan anda", noData:"Catat pendapatan dahulu di skrin Catat.",
+  avg:"Purata bulanan", lean:"Bulan perlahan", leanM:"Bulan: {m}",
+  basis:"Berdasarkan {n} bulan yang dicatat dalam 12 bulan terakhir (hingga {m}). Bulan yang tidak dicatat tidak dikira.",
+  byMonth:"Mengikut bulan", byPlat:"Mengikut platform", others:"Lain-lain", notLogged:"tiada rekod",
+  asT:"Simpan dahulu", asD:"Cadangan jumlah bulanan untuk EPF/i-Saraan, cukai dan simpanan bulan perlahan.",
+  asItem:"Untuk", asPct:"%", asAvg:"Purata", asLean:"Bulan perlahan",
+  epf:"EPF / i-Saraan", tax:"Cukai", buffer:"Simpanan bulan perlahan", total:"Jumlah", left:"Baki untuk guna",
+  asGap:"Bulan perlahan anda RM {g} kurang daripada purata. Simpanan bulan perlahan membantu menampung jurang ini.",
+  asNote:"Peratusan ialah anggaran sementara (placeholder, to be validated). Sahkan dengan KWSP, LHDN atau penasihat anda.",
+  lnT:"Kesediaan pinjaman", lnD:"Lihat berapa peratus pendapatan anda sudah digunakan untuk hutang.",
+  debt:"Ansuran bulanan sedia ada (RM)", target:"Bayaran bulanan sasaran pinjaman baru (RM)",
+  totalDebt:"Jumlah hutang bulanan (sedia ada + sasaran)", lnBasis:"Berdasarkan", lnInc:"Pendapatan", lnPct:"Hutang / pendapatan",
+  byLean:"Bulan perlahan", byAvg:"Purata", flag:"Melebihi {p}%", okTag:"Dalam had {p}%", noInc:"Tiada pendapatan",
+  lnNote:"Had {p}% ialah garis panduan SJKP, sahkan dengan bank. Setiap bank ada syarat sendiri; ini bukan kelulusan.",
+  lnMax:"Hutang maksimum pada {p}%: RM {a} (purata), RM {l} (bulan perlahan).",
+  dcT:"Senarai semak dokumen", dcD:"Tandakan dokumen yang sudah anda sediakan.",
+  d1:"Penyata bank 6-12 bulan", d2:"Rekod pendapatan platform (Grab, foodpanda dll.)", d3:"Notis Taksiran cukai (LHDN)", d4:"Penyata i-Saraan", d5:"Surat pendapatan",
+  d2n:"Muat turun atau tangkap skrin penyata pendapatan/mingguan daripada setiap app. Jika app tiada pilihan eksport, minta bantuan sokongan platform. Simpan juga rekod ini bersama penyata bank anda.",
+  done:"{a} / {b} siap", tipB:"Tip:", tip:"Simpan semua pendapatan dalam satu akaun bank. Penyata yang bersih memudahkan bank melihat pendapatan sebenar anda.",
+  foot:"Alat perancangan sahaja, bukan nasihat kewangan, bukan dokumen bank.",
+  footSub:"Data kekal di peranti ini sahaja. Tiada akaun, tiada log masuk bank, tiada panggilan rangkaian.",
+  saveApp:"⬇ Simpan aplikasi (HTML)", saveHint:"Simpan fail ini di telefon, kemudian buka dan pilih \"Tambah ke Skrin Utama\" dalam pelayar untuk ikon.",
+  copyApp:"Salin kod HTML", saved:"Jika fail tidak turun, tekan \"Salin kod HTML\", tampal dalam Notes/fail teks, dan simpan sebagai gig-ready.html.", shared:"Dihantar. Pilih \"Simpan ke Fail\".", copied:"Kod HTML disalin. Tampal dalam fail teks dan simpan sebagai gig-ready.html.", copyFail:"Salin gagal. Buka fail ini terus dalam pelayar (Chrome/Safari) dan cuba lagi.",
+  exT:"Komitmen lain & kecemasan", exD:"Tambah komitmen bulanan lain, contohnya pinjaman kereta, kad kredit, sewa, bantuan keluarga atau simpanan kecemasan. Hanya ansuran hutang dikira dalam peratus hutang.",
+  exName:"Nama", exPh:"cth. Ansuran motosikal", exAmt:"Sebulan (RM)", exType:"Jenis", exDebt:"Hutang", exOther:"Lain/kecemasan", exAdd:"+ Tambah komitmen",
+  exErrName:"Taip nama.", exErrAmt:"Masukkan jumlah RM yang sah.", exNone:"Belum ada komitmen tambahan.", exDebtTag:"hutang", exOtherTag:"lain",
+  bdT:"Baki bulanan (sebelum kos sara hidup)", bdNote:"Pendapatan tolak simpanan set-aside, jumlah hutang dan komitmen lain. Belum termasuk makan, minyak dan kos hidup harian.", bdLeft:"Baki", bdOther:"Komitmen lain",
+  debtBreak:"Sedia ada {a} + sasaran {b} + tambahan {c}",
+  nLog:"Catat", nInc:"Pendapatan", nAs:"Simpan", nLn:"Pinjaman", nDoc:"Dokumen"
+},
+en: {
+  tagline:"Get ready for your gig career", discB:"Planning aid only.",
+  disc:"This is NOT proof of income and not a bank document. Figures are calculated from what you type yourself.",
+  whyT:"Why Gig Ready?", why:"Gig income goes up and down every month, so it is hard for a bank, and for you, to see the real picture. This app helps you:",
+  why1:"See your real average income and your slowest month", why2:"Set money aside for EPF/i-Saraan, tax and slow months", why3:"Check loan readiness and prepare documents for financing",
+  back:"◀ Back", next:"Next ▶",
+  logT:"Log income", logD:"Add one entry per platform per month. You can add many platforms in the same month.",
+  month:"Month", platform:"Platform", other:"Other", otherName:"Platform name", amount:"Amount (RM)",
+  logHint:"Log every month, including bad ones (RM 0), so your average is honest.",
+  add:"Add", entries:"Your entries", clear:"Delete all data", clearQ:"Delete all data on this device?",
+  noEntries:"No entries yet.", del:"Delete", errMonth:"Pick a valid month.", errAmt:"Enter a valid RM amount.", errName:"Type a platform name.",
+  incT:"Your income", noData:"Log some income first on the Log screen.",
+  avg:"Monthly average", lean:"Lean month", leanM:"Month: {m}",
+  basis:"Based on {n} logged month(s) within the last 12 (up to {m}). Months you did not log are not counted.",
+  byMonth:"By month", byPlat:"By platform", others:"Other", notLogged:"not logged",
+  asT:"Set aside", asD:"Suggested monthly amounts for EPF/i-Saraan, tax and a slow-month buffer.",
+  asItem:"For", asPct:"%", asAvg:"Average", asLean:"Lean month",
+  epf:"EPF / i-Saraan", tax:"Tax", buffer:"Slow-month buffer", total:"Total", left:"Left to spend",
+  asGap:"Your lean month is RM {g} below your average. The slow-month buffer helps cover that gap.",
+  asNote:"Percentages are placeholder, to be validated. Check with KWSP, LHDN or your adviser.",
+  lnT:"Loan readiness", lnD:"See what share of your income already goes to debt.",
+  debt:"Existing monthly instalments (RM)", target:"Target monthly payment for new loan (RM)",
+  totalDebt:"Total monthly debt (existing + target)", lnBasis:"Based on", lnInc:"Income", lnPct:"Debt / income",
+  byLean:"Lean month", byAvg:"Average", flag:"Above {p}%", okTag:"Within {p}%", noInc:"No income",
+  lnNote:"The {p}% limit is an SJKP guideline, verify with the bank. Every bank has its own rules; this is not an approval.",
+  lnMax:"Maximum debt at {p}%: RM {a} (average), RM {l} (lean month).",
+  dcT:"Document checklist", dcD:"Tick the documents you have ready.",
+  d1:"Bank statements, 6-12 months", d2:"Platform earnings records (Grab, foodpanda, etc.)", d3:"Tax assessment notice (LHDN)", d4:"i-Saraan statement", d5:"Income letter",
+  d2n:"Download or screenshot your earnings or weekly statement from each app. If the app has no export, ask platform support. Keep these records together with your bank statements.",
+  done:"{a} / {b} ready", tipB:"Tip:", tip:"Keep all your income in one bank account. Clean statements make it easier for a bank to see your real income.",
+  foot:"Planning aid only, not financial advice, not a bank document.",
+  footSub:"Data stays on this device only. No accounts, no bank logins, no network calls.",
+  saveApp:"⬇ Save app (HTML)", saveHint:"Save this file on your phone, open it, then choose \"Add to Home Screen\" in your browser to get the icon.",
+  copyApp:"Copy HTML code", saved:"If no file downloaded, tap \"Copy HTML code\", paste it into Notes or a text file, and save it as gig-ready.html.", shared:"Sent. Choose \"Save to Files\".", copied:"HTML code copied. Paste it into a text file and save it as gig-ready.html.", copyFail:"Copy failed. Open this file directly in a browser (Chrome/Safari) and try again.",
+  exT:"Other commitments & contingencies", exD:"Add other monthly commitments, for example car loan, credit card, rent, family support or an emergency fund. Only debt instalments count in the debt percentage.",
+  exName:"Name", exPh:"e.g. Motorbike instalment", exAmt:"Per month (RM)", exType:"Type", exDebt:"Debt", exOther:"Other/contingency", exAdd:"+ Add commitment",
+  exErrName:"Type a name.", exErrAmt:"Enter a valid RM amount.", exNone:"No extra commitments yet.", exDebtTag:"debt", exOtherTag:"other",
+  bdT:"Monthly balance (before living costs)", bdNote:"Income minus set-aside, total debt and other commitments. Does not include food, fuel and daily living costs.", bdLeft:"Left", bdOther:"Other commitments",
+  debtBreak:"Existing {a} + target {b} + extra {c}",
+  nLog:"Log", nInc:"Income", nAs:"Set aside", nLn:"Loan", nDoc:"Documents"
+}};
+
+const TABS = [["log","📝","nLog"],["inc","📊","nInc"],["aside","💰","nAs"],["loan","🏦","nLn"],["docs","✅","nDoc"]];
+const DOCS = ["d1","d2","d3","d4","d5"];
+
+/* ---------- state + storage (on-device only) ---------- */
+let state = { lang:"ms", entries:[], debt:"", target:"", checks:{}, extras:[] };
+let tab = "log";
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    if(s.lang==="en"||s.lang==="ms") state.lang = s.lang;
+    if(Array.isArray(s.entries)) state.entries = s.entries.filter(e=>e&&/^\d{4}-(0[1-9]|1[0-2])$/.test(e.month)&&typeof e.platform==="string"&&isFinite(e.amount)&&e.amount>=0).map(e=>({id:String(e.id),month:e.month,platform:e.platform.slice(0,24),amount:Number(e.amount)}));
+    if(s.debt!=null) state.debt = String(s.debt);
+    if(s.target!=null) state.target = String(s.target);
+    if(s.checks&&typeof s.checks==="object") state.checks = s.checks;
+    if(Array.isArray(s.extras)) state.extras = s.extras.filter(x=>x&&typeof x.name==="string"&&isFinite(x.amount)&&x.amount>=0).map(x=>({id:String(x.id),name:x.name.slice(0,30),amount:Number(x.amount),type:x.type==="other"?"other":"debt"}));
+  }catch(e){}
+}
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const t = (k,v) => { let s = (T[state.lang][k] ?? k); if(v) for(const x in v) s = s.split("{"+x+"}").join(v[x]); return s; };
+const rm = n => "RM " + Math.round(n).toLocaleString("en-US");
+const num = s => { const n = parseFloat(String(s).replace(",", ".")); return isFinite(n)&&n>0 ? n : 0; };
+const pct = n => (n*100).toFixed(1).replace(/\.0$/,"") + "%";
+const mLabel = (key,short) => { const [y,m]=key.split("-"); return MONTHS[state.lang][+m-1] + (short?"":" "+y); };
+const SVGNS = "http://www.w3.org/2000/svg";
+function svg(tag, attrs, text){ const e=document.createElementNS(SVGNS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(text!=null) e.textContent=text; return e; }
+function h(tag, cls, text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+
+/* ---------- core calculation ---------- */
+function analyse(entries){
+  const byMonth = {};
+  entries.forEach(e => { byMonth[e.month] = (byMonth[e.month]||0) + e.amount; });
+  const keys = Object.keys(byMonth).sort();
+  if(!keys.length) return null;
+  const idx = k => { const [y,m]=k.split("-").map(Number); return y*12+m-1; };
+  const latest = idx(keys[keys.length-1]);
+  const slots = [];
+  for(let i=WINDOW_MONTHS-1;i>=0;i--){
+    const n = latest-i, y = Math.floor(n/12), m = n%12;
+    const key = y+"-"+String(m+1).padStart(2,"0");
+    slots.push({key, total: byMonth[key]});
+  }
+  const logged = slots.filter(s=>s.total!==undefined);
+  const sum = logged.reduce((a,s)=>a+s.total,0);
+  const avg = sum/logged.length;
+  const leanSlot = logged.reduce((a,s)=>s.total<a.total?s:a, logged[0]);
+  const inWin = new Set(slots.map(s=>s.key));
+  const plat = {};
+  entries.forEach(e => { if(!inWin.has(e.month)) return;
+    const k = e.platform.trim().toLowerCase(); (plat[k] = plat[k] || {name:e.platform.trim(), total:0}).total += e.amount; });
+  const platforms = Object.values(plat).filter(p=>p.total>0).sort((a,b)=>b.total-a.total);
+  return { slots, nLogged:logged.length, avg, lean:leanSlot.total, leanKey:leanSlot.key, latestKey:slots[slots.length-1].key, platforms };
+}
+function setAside(income){
+  const r = {};
+  for(const k in SETASIDE_PCT) r[k] = income*SETASIDE_PCT[k];
+  r.total = r.epf+r.tax+r.buffer; r.left = income-r.total;
+  return r;
+}
+function debtShare(totalDebt, income){ return income>0 ? totalDebt/income : null; }
+
+/* ---------- render ---------- */
+function renderStatic(){
+  document.documentElement.lang = state.lang;
+  document.querySelectorAll("[data-i]").forEach(e => { e.textContent = t(e.dataset.i); });
+  document.querySelectorAll("[data-ph]").forEach(e => { e.placeholder = t(e.dataset.ph); });
+  $("l-ms").setAttribute("aria-pressed", state.lang==="ms");
+  $("l-en").setAttribute("aria-pressed", state.lang==="en");
+  const nav = $("nav"); nav.textContent = "";
+  TABS.forEach(([id,ic,k]) => {
+    const b = h("button"); b.type="button"; b.dataset.tab=id;
+    b.appendChild(h("span","ic",ic)); b.appendChild(h("span","",t(k)));
+    if(id===tab) b.setAttribute("aria-current","page");
+    b.onclick = () => setTab(id);
+    nav.appendChild(b);
+  });
+}
+function setTab(id){ tab = id; showTab(); }
+function updatePager(){
+  const i = TABS.findIndex(x=>x[0]===tab), prev = TABS[i-1], next = TABS[i+1];
+  $("pg-prev").hidden = !prev; $("pg-next").hidden = !next;
+  if(prev) $("pg-prev").textContent = t("back");
+  if(next) $("pg-next").textContent = t("next");
+  $("pg-prev").onclick = () => prev && setTab(prev[0]);
+  $("pg-next").onclick = () => next && setTab(next[0]);
+  $("pg-step").textContent = (i+1)+"/"+TABS.length;
+}
+function showTab(){
+  document.querySelectorAll("main section").forEach(s => s.classList.toggle("on", s.id==="s-"+tab));
+  document.querySelectorAll("nav button").forEach(b => { if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  updatePager(); window.scrollTo(0,0);
+}
+
+function renderLog(){
+  const ul = $("entryList"); ul.textContent = "";
+  if(!state.entries.length){ const li=h("li","empty",t("noEntries")); ul.appendChild(li); return; }
+  [...state.entries].sort((a,b)=> b.month.localeCompare(a.month) || (a.id<b.id?1:-1)).forEach(e => {
+    const li = h("li");
+    li.appendChild(h("span","grow", mLabel(e.month)+" · "+e.platform));
+    li.appendChild(h("b","",rm(e.amount)));
+    const x = h("button","x","✕"); x.type="button"; x.setAttribute("aria-label", t("del")+" "+mLabel(e.month)+" "+e.platform);
+    x.onclick = () => { state.entries = state.entries.filter(z=>z.id!==e.id); save(); renderAll(); };
+    li.appendChild(x); ul.appendChild(li);
+  });
+}
+
+function renderIncome(){
+  const a = analyse(state.entries);
+  $("incEmpty").hidden = !!a; $("incBody").hidden = !a;
+  if(!a) return;
+  $("v-avg").textContent = rm(a.avg);
+  $("v-lean").textContent = rm(a.lean);
+  $("v-leanM").textContent = t("leanM",{m:mLabel(a.leanKey)});
+  $("v-basis").textContent = t("basis",{n:a.nLogged, m:mLabel(a.latestKey)});
+
+  // bar chart
+  const s = $("bars"); s.textContent = "";
+  const W=360,H=210,top=22,bot=30,left=6,right=6, ch=H-top-bot, bw=(W-left-right)/a.slots.length;
+  const max = Math.max(1, ...a.slots.map(x=>x.total||0));
+  s.setAttribute("aria-label", t("byMonth")+": "+a.slots.filter(x=>x.total!==undefined).map(x=>mLabel(x.key)+" "+rm(x.total)).join(", "));
+  s.appendChild(svg("line",{x1:left,x2:W-right,y1:top+ch,y2:top+ch,stroke:"#9ca3af","stroke-width":1}));
+  a.slots.forEach((sl,i) => {
+    const x = left+i*bw+bw*0.15, w = bw*0.7;
+    if(sl.total===undefined){ s.appendChild(svg("text",{x:x+w/2,y:top+ch-4,"text-anchor":"middle","font-size":10,fill:"#9ca3af"},"–")); }
+    else {
+      const bh = Math.max(sl.total>0?2:0, sl.total/max*ch), isLean = sl.key===a.leanKey;
+      s.appendChild(svg("rect",{x,y:top+ch-bh,width:w,height:bh,rx:2,fill:isLean?"#b45309":"#1d4ed8"}));
+      s.appendChild(svg("text",{x:x+w/2,y:top+ch-bh-4,"text-anchor":"middle","font-size":8.5,fill:"#111827"}, sl.total>=1000 ? (sl.total/1000).toFixed(1).replace(/\.0$/,"")+"k" : Math.round(sl.total)));
+    }
+    s.appendChild(svg("text",{x:x+w/2,y:H-12,"text-anchor":"middle","font-size":9.5,fill:"#4b5563"}, mLabel(sl.key,true)));
+  });
+  const ay = top+ch-(a.avg/max*ch);
+  s.appendChild(svg("line",{x1:left,x2:W-right,y1:ay,y2:ay,stroke:"#111827","stroke-width":1.2,"stroke-dasharray":"4 3"}));
+  s.appendChild(svg("text",{x:left,y:9,"font-size":10,fill:"#111827","font-weight":700}, "- - -  "+t("avg")+" "+rm(a.avg)));
+
+  // donut
+  let ps = a.platforms.slice();
+  if(ps.length>COLORS.length){ const rest = ps.slice(COLORS.length-1); ps = ps.slice(0,COLORS.length-1); ps.push({name:t("others"), total:rest.reduce((x,p)=>x+p.total,0)}); }
+  const tot = ps.reduce((x,p)=>x+p.total,0);
+  const d = $("donut"); d.textContent = ""; const lg = $("legend"); lg.textContent = "";
+  d.setAttribute("aria-label", t("byPlat"));
+  d.appendChild(svg("circle",{cx:21,cy:21,r:15.9155,fill:"none",stroke:"#e5e7eb","stroke-width":6}));
+  let off = 25;
+  ps.forEach((p,i) => {
+    const share = tot>0 ? p.total/tot*100 : 0;
+    d.appendChild(svg("circle",{cx:21,cy:21,r:15.9155,fill:"none",stroke:COLORS[i],"stroke-width":6,"stroke-dasharray":share+" "+(100-share),"stroke-dashoffset":off}));
+    off -= share;
+    const li = h("li"); const sw = h("span","sw"); sw.style.background = COLORS[i];
+    li.appendChild(sw); li.appendChild(h("span","grow",p.name)); li.appendChild(h("b","",rm(p.total)+" · "+Math.round(share)+"%"));
+    lg.appendChild(li);
+  });
+  d.appendChild(svg("text",{x:21,y:22.5,"text-anchor":"middle","font-size":4.2,"font-weight":700,fill:"#111827"}, rm(tot)));
+}
+
+function renderAside(){
+  const a = analyse(state.entries);
+  $("asEmpty").hidden = !!a; $("asBody").hidden = !a;
+  $("asNote").textContent = t("asNote");
+  if(!a) return;
+  const A = setAside(a.avg), L = setAside(a.lean);
+  const body = $("asRows"); body.textContent = "";
+  [["epf"],["tax"],["buffer"]].forEach(([k]) => {
+    const tr = h("tr"); tr.appendChild(h("td","",t(k))); tr.appendChild(h("td","",pct(SETASIDE_PCT[k])));
+    tr.appendChild(h("td","",rm(A[k]))); tr.appendChild(h("td","",rm(L[k]))); body.appendChild(tr);
+  });
+  const tt = h("tr"); tt.style.fontWeight="800";
+  tt.appendChild(h("td","",t("total"))); tt.appendChild(h("td","",pct(Object.values(SETASIDE_PCT).reduce((x,y)=>x+y,0))));
+  tt.appendChild(h("td","",rm(A.total))); tt.appendChild(h("td","",rm(L.total))); body.appendChild(tt);
+  const lf = h("tr"); lf.appendChild(h("td","",t("left"))); lf.appendChild(h("td","",""));
+  lf.appendChild(h("td","",rm(A.left))); lf.appendChild(h("td","",rm(L.left))); body.appendChild(lf);
+  $("asGap").textContent = t("asGap",{g:Math.round(a.avg-a.lean).toLocaleString("en-US")});
+}
+
+const extraSum = type => state.extras.filter(x=>x.type===type).reduce((a,x)=>a+x.amount,0);
+function renderLoan(){
+  const ul = $("exList"); ul.textContent = "";
+  if(!state.extras.length) ul.appendChild(h("li","empty",t("exNone")));
+  state.extras.forEach(x => {
+    const li = h("li"); li.appendChild(h("span","grow",x.name+" · "+t(x.type==="debt"?"exDebtTag":"exOtherTag")));
+    li.appendChild(h("b","",rm(x.amount)));
+    const d = h("button","x","✕"); d.type="button"; d.setAttribute("aria-label", t("del")+" "+x.name);
+    d.onclick = () => { state.extras = state.extras.filter(z=>z.id!==x.id); save(); renderLoan(); };
+    li.appendChild(d); ul.appendChild(li);
+  });
+  const a = analyse(state.entries);
+  $("lnEmpty").hidden = !!a; $("lnBody").hidden = !a;
+  if(!a) return;
+  const exDebt = extraSum("debt"), exOther = extraSum("other");
+  const total = num(state.debt)+num(state.target)+exDebt;
+  $("v-total").textContent = rm(total);
+  $("v-break").textContent = t("debtBreak",{a:rm(num(state.debt)),b:rm(num(state.target)),c:rm(exDebt)});
+  const bd = $("bdRows"); bd.textContent = "";
+  const r1 = h("tr"), r2 = h("tr"); r1.dataset.row="other"; r2.dataset.row="left";
+  r1.appendChild(h("td","",t("bdOther"))); r2.appendChild(h("td","",t("bdLeft")));
+  [a.lean,a.avg].forEach(inc => {
+    const left = inc - setAside(inc).total - total - exOther;
+    r1.appendChild(h("td","",rm(exOther)));
+    const c = h("td","",(left<0?"-":"")+rm(Math.abs(left))); c.style.fontWeight="800"; if(left<0) c.style.color="var(--bad)"; r2.appendChild(c);
+  });
+  bd.appendChild(r1); bd.appendChild(r2);
+  const rows = $("lnRows"); rows.textContent = "";
+  [["byLean",a.lean],["byAvg",a.avg]].forEach(([k,inc]) => {
+    const share = debtShare(total, inc), over = share===null || share>DEBT_LIMIT;
+    const tr = h("tr"); tr.dataset.row = k;
+    tr.appendChild(h("td","",t(k))); tr.appendChild(h("td","",rm(inc)));
+    const td = h("td"); td.appendChild(h("div","", share===null ? "–" : pct(share)));
+    const tag = h("span","tag "+(over?"bad":"ok"), share===null ? t("noInc") : over ? "⚠ "+t("flag",{p:DEBT_LIMIT*100}) : "✓ "+t("okTag",{p:DEBT_LIMIT*100}));
+    td.appendChild(tag); tr.appendChild(td); rows.appendChild(tr);
+  });
+  $("lnNote").textContent = t("lnNote",{p:DEBT_LIMIT*100}) + " " + t("lnMax",{p:DEBT_LIMIT*100, a:Math.round(a.avg*DEBT_LIMIT).toLocaleString("en-US"), l:Math.round(a.lean*DEBT_LIMIT).toLocaleString("en-US")});
+}
+
+function renderDocs(){
+  const box = $("checks"); box.textContent = "";
+  DOCS.forEach(k => {
+    const lab = h("label","check"); const cb = document.createElement("input"); cb.type="checkbox"; cb.id="chk-"+k; cb.checked = !!state.checks[k];
+    cb.onchange = () => { state.checks[k]=cb.checked; save(); renderDocs(); };
+    const txt = h("span","",t(k));
+    if(k==="d2"){ txt.appendChild(h("span","hint",t("d2n"))); txt.lastChild.style.display="block"; }
+    lab.appendChild(cb); lab.appendChild(txt); box.appendChild(lab);
+  });
+  const n = DOCS.filter(k=>state.checks[k]).length;
+  box.appendChild(h("p","hint",t("done",{a:n,b:DOCS.length})));
+}
+
+function renderAll(){ renderStatic(); renderLog(); renderIncome(); renderAside(); renderLoan(); renderDocs(); showTabKeepScroll(); }
+function showTabKeepScroll(){ document.querySelectorAll("main section").forEach(s => s.classList.toggle("on", s.id==="s-"+tab)); updatePager(); }
+
+/* ---------- events ---------- */
+function setLang(l){ state.lang = l; save(); renderAll(); }
+$("l-ms").onclick = () => setLang("ms");
+$("l-en").onclick = () => setLang("en");
+$("in-plat").onchange = () => { $("otherBox").hidden = $("in-plat").value!=="__other"; };
+
+$("f-log").onsubmit = ev => {
+  ev.preventDefault();
+  const err = $("logErr"); err.textContent = "";
+  const month = $("in-month").value, amtRaw = $("in-amt").value.trim();
+  const amount = parseFloat(amtRaw.replace(",", "."));
+  let platform = $("in-plat").value;
+  if(platform==="__other") platform = $("in-other").value.trim().slice(0,24);
+  if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)){ err.textContent = t("errMonth"); return; }
+  if(!platform){ err.textContent = t("errName"); return; }
+  if(!isFinite(amount) || amount<0 || amount>1000000){ err.textContent = t("errAmt"); return; }
+  state.entries.push({ id: Date.now().toString(36)+Math.random().toString(36).slice(2,7), month, platform, amount });
+  save(); $("in-amt").value = ""; renderAll(); $("in-amt").focus();
+};
+$("btn-clear").onclick = () => {
+  if(!confirm(t("clearQ"))) return;
+  state = { lang:state.lang, entries:[], debt:"", target:"", checks:{}, extras:[] };
+  $("in-debt").value = ""; $("in-target").value = "";
+  save(); renderAll();
+};
+$("f-extra").onsubmit = ev => {
+  ev.preventDefault(); const err = $("exErr"); err.textContent = "";
+  const name = $("ex-name").value.trim().slice(0,30), amount = parseFloat($("ex-amt").value.trim().replace(",", "."));
+  if(!name){ err.textContent = t("exErrName"); return; }
+  if(!isFinite(amount) || amount<0 || amount>1000000){ err.textContent = t("exErrAmt"); return; }
+  state.extras.push({ id: Date.now().toString(36)+Math.random().toString(36).slice(2,7), name, amount, type: $("ex-type").value==="other"?"other":"debt" });
+  save(); $("ex-name").value = ""; $("ex-amt").value = ""; renderLoan(); $("ex-name").focus();
+};
+["in-debt","in-target"].forEach(id => $(id).addEventListener("input", () => {
+  state.debt = $("in-debt").value; state.target = $("in-target").value; save(); renderLoan();
+}));
+
+function msg(k){ $("saveMsg").textContent = t(k); }
+$("btn-save").onclick = async () => {
+  try{
+    const file = new File([APP_SRC], "gig-ready.html", {type:"text/html"});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{ await navigator.share({files:[file], title:"Gig Ready"}); msg("shared"); return; }
+      catch(e){ if(e && e.name==="AbortError") return; }
+    }
+    const url = URL.createObjectURL(file);
+    const a = document.createElement("a"); a.href = url; a.download = "gig-ready.html";
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url), 5000);
+  }catch(e){}
+  msg("saved");
+};
+$("btn-copy").onclick = async () => {
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){ await navigator.clipboard.writeText(APP_SRC); msg("copied"); return; }
+    throw 0;
+  }catch(e){
+    try{
+      const ta = document.createElement("textarea"); ta.value = APP_SRC; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select(); const ok = document.execCommand("copy"); ta.remove();
+      msg(ok ? "copied" : "copyFail");
+    }catch(e2){ msg("copyFail"); }
+  }
+};
+// home-screen icon (PNG needed by iOS), drawn locally with canvas
+try{
+  const c = document.createElement("canvas"); c.width = c.height = 180; const x = c.getContext("2d");
+  x.fillStyle = "#1d4ed8"; x.fillRect(0,0,180,180); x.fillStyle = "#fff";
+  [[36,107,28,39],[75,79,28,67],[114,45,28,101]].forEach(r => x.fillRect(...r));
+  $("touch").href = c.toDataURL("image/png");
+}catch(e){}
+
+/* ---------- init ---------- */
+load();
+{ const d = new Date(); $("in-month").value = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
+$("in-debt").value = state.debt; $("in-target").value = state.target;
+renderAll();
+</script>
+</body>
+</html>
